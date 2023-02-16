@@ -1,0 +1,39 @@
+
+# sudo iptables -L -v
+
+## Localhost
+# sudo iptables -A INPUT -i lo -j ACCEPT
+# sudo iptables -A OUTPUT -o lo -j ACCEPT
+
+## SSH rule
+# sudo iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+# sudo iptables -A OUTPUT -p tcp --sport 22 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+
+## Default
+# iptables -P INPUT DROP
+# iptables -P FORWARD DROP
+# iptables -P OUTPUT ACCEPT
+
+## iptables on boot
+# sudo apt install iptables-persistend
+## alternative (add 2nd line on /etc/rc.local )
+# sudo iptables-save > /etc/iptables_rules
+/sbin/iptables-restore < /etc/iptables_rules
+
+## Save configuration
+# sudo mkdir /etc/iptables/
+# iptables-save > /etc/iptables/rules.v4
+# ip6tables-save > /etc/iptables/rules.v6
+
+## Restore configuration
+# iptables-restore < /etc/iptables/rules.v4
+
+
+#### OTHER ####
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -m tcp -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
